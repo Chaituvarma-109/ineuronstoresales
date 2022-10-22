@@ -1,0 +1,8 @@
+training_pipeline_config:
+  pipeline_name: sales
+  artifact_dir: artifact
+
+data_ingestion_config:
+  train_dataset_url: https://dagshub.com/Chaituvarma-109/ineuronstoresales/raw/7a4b0a32cd7ab31c9030f69dcd0c56567438c536/data/Train.csv
+  test_dataset_url: https://dagshub.com/Chaituvarma-109/ineuronstoresales/raw/7a4b0a32cd7ab31c9030f69dcd0c56567438c536/data/Test.csv
+  data: data
