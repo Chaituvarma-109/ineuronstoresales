@@ -6,3 +6,9 @@ data_ingestion_config:
   train_dataset_url: https://dagshub.com/Chaituvarma-109/ineuronstoresales/raw/7a4b0a32cd7ab31c9030f69dcd0c56567438c536/data/Train.csv
   test_dataset_url: https://dagshub.com/Chaituvarma-109/ineuronstoresales/raw/7a4b0a32cd7ab31c9030f69dcd0c56567438c536/data/Test.csv
   data: data
+
+data_validation_config:
+  schema_dir: config
+  schema_file_name: schema.yaml
+  report_file_name: report.json
+  report_page_file_name: report.html
