@@ -16,7 +16,7 @@ class SalesException(Exception):
         """
         _, _, exec_tb = error_detail.exc_info()
 
-        exception_block_line_number = exec_tb.tb_frame.tb_lineno
+        exception_block_line_number = exec_tb.tb_frame.f_lineno
         try_block_line_num = exec_tb.tb_lineno
         file_name = exec_tb.tb_frame.f_code.co_filename
 
