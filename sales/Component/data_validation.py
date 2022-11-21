@@ -1,10 +1,11 @@
 import os.path
 import sys
+import json
 
 import pandas as pd
 
 from sales.Config.configuration import DatavalidationConfig
-from sales.Entity.artifact_entity import DataIngestionArtifact
+from sales.Entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact
 from sales.Exception.customexception import SalesException
 from sales.utils.util import read_yaml_file
 from sales.Logger.log import logging
@@ -20,6 +21,11 @@ class DataValidation:
             raise SalesException(e, sys) from e
 
     def get_train_and_test_df(self) -> tuple[str, str]:
+        """
+        reads the train and test csv files.
+        Returns: test and train files.
+
+        """
         try:
             train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path)
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
@@ -30,6 +36,15 @@ class DataValidation:
 
     @staticmethod
     def check_col_names(df_col: list[str], schema_df_col: list[str]) -> bool:
+        """
+        this method checks column names of the dataset
+        Args:
+            df_col: list of columns from the dataset
+            schema_df_col: list of columns names from the schema yaml file.
+
+        Returns: true if column names matches else returns false.
+
+        """
         try:
             check_name = False
             for col_name in df_col:
@@ -42,6 +57,15 @@ class DataValidation:
 
     @staticmethod
     def check_domain_names(df_val: list[str], schema_val: list[str]) -> bool:
+        """
+        checks the values of the given columns.
+        Args:
+            df_val: list of values of columns
+            schema_val: list of specified values from the schema yaml file.
+
+        Returns: true if domain values matches else false
+
+        """
         try:
             domain_name = False
             for col_name in df_val:
@@ -53,6 +77,11 @@ class DataValidation:
             raise SalesException(e, sys) from e
 
     def is_train_test_file_exists(self) -> bool:
+        """
+        this method checks whether train and test files existed in the specified path or not
+        Returns:
+            returns true if files exists else returns false.
+        """
         try:
             logging.info("checking if training and test file is available")
             train_file_path_exists = False
@@ -78,6 +107,11 @@ class DataValidation:
             raise SalesException(e, sys) from e
 
     def validate_dataset_schema(self) -> bool:
+        """
+        this method validates the dataset i.e, checks files and columns of the datasets.
+        Returns:
+            returns true if the dataset is ok else returns false.
+        """
         try:
             validation_status = False
 
@@ -133,6 +167,15 @@ class DataValidation:
         try:
             self.is_train_test_file_exists()
             self.validate_dataset_schema()
+
+            data_validation_artifact = DataValidationArtifact(
+                schema_file_path=self.data_validation_config.schema_file_path,
+                is_validated=True,
+                message="Data Validation performed successfully."
+            )
+            logging.info(f"Data Validation Artifact: {data_validation_artifact}")
+
+            return data_validation_artifact
 
         except Exception as e:
             raise SalesException(e, sys) from e

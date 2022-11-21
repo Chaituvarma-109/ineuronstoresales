@@ -18,6 +18,11 @@ class Dataingestion:
             raise SalesException(e, sys) from e
 
     def download_housing_data(self) -> DataIngestionArtifact:
+        """
+        downloads dataset from the specified url.
+        Returns: DataIngestionArtifact
+
+        """
         try:
             train_dataset_url = self.data_ingestion_config.DATA_INGESTION_TRAIN_DATA_DOWNLOAD_URL
             test_dataset_url = self.data_ingestion_config.DATA_INGESTION_TEST_DATA_DOWNLOAD_URL
