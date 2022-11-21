@@ -30,6 +30,27 @@ DATA_INGESTION_TEST_DATA_DOWNLOAD_URL = 'test_dataset_url'
 DATA_VALIDATION_CONFIG_KEY = "data_validation_config"
 DATA_VALIDATION_SCHEMA_FILE_NAME_KEY = "schema_file_name"
 DATA_VALIDATION_SCHEMA_DIR_KEY = "schema_dir"
-DATA_VALIDATION_ARTIFACT_DIR_NAME = "data_validation"
-DATA_VALIDATION_REPORT_FILE_NAME_KEY = "report_file_name"
-DATA_VALIDATION_REPORT_PAGE_FILE_NAME_KEY = "report_page_file_name"
+
+# Data Transformation related variables
+DATA_TRANSFORMATION_ARTIFACT_DIR = "data_transformation"
+DATA_TRANSFORMATION_CONFIG_KEY = "data_transformation_config"
+DATA_TRANSFORMATION_ITEM_TYPE_COMBINED = "Item_Type_Combined"
+DATA_TRANSFORMATION_YEARS_ESTABLISHED = "Years_Established"
+DATA_TRANSFORMATION_ITEM_FAT_CONTENT = "Item_Fat_Content"
+DATA_TRANSFORMATION_ITEM_VISIBILITY = "Item_Visibility"
+DATA_TRANSFORMATION_DIR_NAME_KEY = "transformed_dir"
+DATA_TRANSFORMATION_TRAIN_DIR_NAME_KEY = "transformed_train_dir"
+DATA_TRANSFORMATION_TEST_DIR_NAME_KEY = "transformed_test_dir"
+DATA_TRANSFORMATION_PREPROCESSING_DIR_KEY = "preprocessing_dir"
+DATA_TRANSFORMATION_PREPROCESSED_FILE_NAME_KEY = "preprocessed_object_file_name"
+
+COLUMN_OUTLET_ESTABLISHMENT_YEAR = "Outlet_Establishment_Year"
+COLUMN_ITEM_IDENTIFIER = "Item_Identifier"
+COLUMN_ITEM_FAT_CONTENT = "Item_Fat_Content"
+COLUMN_ITEM_ITEM_VISIBILITY = "Item_Visibility"
+DATASET_SCHEMA_COLUMNS_KEY = "columns"
+
+NUMERICAL_COLUMN_KEY = "numerical_columns"
+CATEGORICAL_COLUMN_KEY = "categorical_columns"
+
+TARGET_COLUMN_KEY = "target_column"
