@@ -1,12 +1,13 @@
 import sys
 
 from sales.Entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact,
-                                          ModelTrainerArtifact)
+                                          ModelTrainerArtifact, ModelEvaluationArtifact)
 from sales.Exception.customexception import SalesException
 from sales.Component.data_ingestion import Dataingestion
 from sales.Component.data_validation import DataValidation
 from sales.Component.data_transformation import DataTransformation
 from sales.Component.model_trainer import ModelTrainer
+from sales.Component.model_evaluation import ModelEvaluation
 from sales.Config.configuration import Configuration
 from sales.Logger.log import logging
 
@@ -56,6 +57,19 @@ class Pipeline:
         except Exception as e:
             raise SalesException(e, sys) from e
 
+    def start_model_evaluation(self, data_ingestion_artifact: DataIngestionArtifact,
+                               data_validation_artifact: DataValidationArtifact,
+                               model_trainer_artifact: ModelTrainerArtifact) -> ModelEvaluationArtifact:
+        try:
+            model_eval = ModelEvaluation(
+                model_evaluation_config=self.config.get_model_evaluation_config(),
+                data_ingestion_artifact=data_ingestion_artifact,
+                data_validation_artifact=data_validation_artifact,
+                model_trainer_artifact=model_trainer_artifact)
+            return model_eval.initiate_model_evaluation()
+        except Exception as e:
+            raise SalesException(e, sys) from e
+
     def run_pipeline(self):
         try:
             data_ingestion_artifact = self.start_data_ingestion()
@@ -64,5 +78,8 @@ class Pipeline:
                 data_ingestion_artifact=data_ingestion_artifact, data_validation_artifact=data_validation_artifact
             )
             model_trainer_artifact = self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
+            model_evaluation_artifact = self.start_model_evaluation(data_ingestion_artifact=data_ingestion_artifact,
+                                                                    data_validation_artifact=data_validation_artifact,
+                                                                    model_trainer_artifact=model_trainer_artifact)
         except Exception as e:
             raise SalesException(e, sys) from e
