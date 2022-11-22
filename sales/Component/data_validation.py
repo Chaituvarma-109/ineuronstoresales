@@ -139,7 +139,7 @@ class DataValidation:
             outlet_type = domain_val['Outlet_Type']
 
             schema_train_cols = numerical_col + categorical_col + target_col
-            schema_test_cols = numerical_col + categorical_col
+            schema_test_cols = numerical_col + categorical_col + target_col
 
             train_len_col = (len(train_df_col) == len(schema_train_cols))
             test_len_col = (len(test_df_col) == len(schema_test_cols))

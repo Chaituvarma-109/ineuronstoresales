@@ -37,9 +37,11 @@ class FeatureGenerator(BaseEstimator, TransformerMixin):
                 })
                 X['Item_Fat_Content'] = X['Item_Fat_Content'].replace(['low fat', 'LF', 'reg'],
                                                                       ['Low Fat', 'Low Fat', 'Regular'], inplace=True)
+                X.drop(['Item_Type', 'Outlet_Identifier'], axis=1, inplace=True)
             if self.col_type == 'numerical':
                 X['Years_Established'] = X['Outlet_Establishment_Year'].apply(lambda x: 2022 - x)
                 X['Item_Visibility'] = X['Item_Visibility'].replace(0, X['Item_Visibility'].mean())
+                X.drop(['Outlet_Establishment_Year'], axis=1, inplace=True)
 
             return X
         except Exception as e:
@@ -81,7 +83,7 @@ class DataTransformation:
                     col_type='categorical',
                     col_names=categorical_columns,
                 )),
-                ('one hot encoding', OneHotEncoder(sparse=False)),
+                ('one hot encoding', OneHotEncoder(sparse=False, handle_unknown='ignore')),
                 ('scaling', StandardScaler(with_mean=False))
             ])
 
@@ -115,16 +117,19 @@ class DataTransformation:
 
             target_column_name = schema[TARGET_COLUMN_KEY]
 
-            logging.info(f"Splitting input and target feature from training dataframe.")
+            logging.info(f"Splitting input and target feature from training and testing dataframe.")
             input_feature_train_df = train_df.drop(columns=target_column_name, axis=1)
             target_feature_train_df = train_df[target_column_name]
 
+            input_feature_test_df = test_df.drop(columns=target_column_name, axis=1)
+            target_feature_test_df = test_df[target_column_name]
+
             logging.info(f"Applying preprocessing object on training dataframe and testing dataframe")
             input_feature_train_array = preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_array = preprocessing_obj.transform(test_df)
+            input_feature_test_array = preprocessing_obj.transform(input_feature_test_df)
 
             train_arr = np.c_[input_feature_train_array, np.array(target_feature_train_df)]
-            test_arr = np.c_[input_feature_test_array]
+            test_arr = np.c_[input_feature_test_array, np.array(target_feature_test_df)]
 
             transformed_train_dir = self.data_transformation_config.transformed_train_dir
             transformed_test_dir = self.data_transformation_config.transformed_test_dir

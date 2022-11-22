@@ -1,10 +1,12 @@
 import sys
 
-from sales.Entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact
+from sales.Entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact,
+                                          ModelTrainerArtifact)
 from sales.Exception.customexception import SalesException
 from sales.Component.data_ingestion import Dataingestion
 from sales.Component.data_validation import DataValidation
 from sales.Component.data_transformation import DataTransformation
+from sales.Component.model_trainer import ModelTrainer
 from sales.Config.configuration import Configuration
 from sales.Logger.log import logging
 
@@ -45,6 +47,15 @@ class Pipeline:
         except Exception as e:
             raise SalesException(e, sys) from e
 
+    def start_model_trainer(self, data_transformation_artifact: DataTransformationArtifact) -> ModelTrainerArtifact:
+        try:
+            model_trainer = ModelTrainer(model_trainer_config=self.config.get_model_trainer_config(),
+                                         data_transformation_artifact=data_transformation_artifact
+                                         )
+            return model_trainer.initiate_model_trainer()
+        except Exception as e:
+            raise SalesException(e, sys) from e
+
     def run_pipeline(self):
         try:
             data_ingestion_artifact = self.start_data_ingestion()
@@ -52,5 +63,6 @@ class Pipeline:
             data_transformation_artifact = self.start_data_transformation(
                 data_ingestion_artifact=data_ingestion_artifact, data_validation_artifact=data_validation_artifact
             )
+            model_trainer_artifact = self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
         except Exception as e:
             raise SalesException(e, sys) from e

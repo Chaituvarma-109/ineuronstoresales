@@ -1,6 +1,9 @@
 import os
 import sys
 
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
 from six.moves import urllib
 
 from sales.Entity.artifact_entity import DataIngestionArtifact
@@ -17,7 +20,7 @@ class Dataingestion:
         except Exception as e:
             raise SalesException(e, sys) from e
 
-    def download_housing_data(self) -> DataIngestionArtifact:
+    def download_housing_data(self) -> None:
         """
         downloads dataset from the specified url.
         Returns: DataIngestionArtifact
@@ -44,18 +47,46 @@ class Dataingestion:
             urllib.request.urlretrieve(test_dataset_url, test_file_path)
             logging.info(f"file {test_file_path} has been downloaded successfully.")
 
+        except Exception as e:
+            raise SalesException(e, sys) from e
+
+    def split_data_as_train_test(self) -> DataIngestionArtifact:
+        try:
+            data_dir = self.data_ingestion_config.DATA_INGESTION_DATA_DIR
+
+            file_name = os.listdir(data_dir)[3]
+
+            sales_train_file_path = os.path.join(data_dir, file_name)
+
+            logging.info(f"Reading csv file: [{sales_train_file_path}]")
+            sales_train_df = pd.read_csv(sales_train_file_path)
+
+            sales_train, sales_test = train_test_split(sales_train_df, test_size=0.2, random_state=42)
+
+            train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir, file_name)
+            test_file_path = os.path.join(self.data_ingestion_config.ingested_test_dir, file_name)
+
+            os.makedirs(self.data_ingestion_config.ingested_train_dir, exist_ok=True)
+            logging.info(f"Exporting training dataset to file: [{train_file_path}]")
+            sales_train.to_csv(train_file_path, index=False)
+
+            os.makedirs(self.data_ingestion_config.ingested_test_dir, exist_ok=True)
+            logging.info(f"Exporting test dataset to file: [{test_file_path}]")
+            sales_test.to_csv(test_file_path, index=False)
+
             data_ingestion_artifact = DataIngestionArtifact(train_file_path=train_file_path,
                                                             test_file_path=test_file_path, is_ingested=True,
-                                                            msg="Data ingestion completed successfully.")
-
+                                                            msg=f"Data ingestion completed successfully.")
             logging.info(f"Data Ingestion artifact:[{data_ingestion_artifact}]")
             return data_ingestion_artifact
+
         except Exception as e:
             raise SalesException(e, sys) from e
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
-            return self.download_housing_data()
+            # self.download_housing_data()
+            return self.split_data_as_train_test()
         except Exception as e:
             raise SalesException(e, sys) from e
 

@@ -6,6 +6,9 @@ data_ingestion_config:
   train_dataset_url: https://dagshub.com/Chaituvarma-109/ineuronstoresales/raw/7a4b0a32cd7ab31c9030f69dcd0c56567438c536/data/Train.csv
   test_dataset_url: https://dagshub.com/Chaituvarma-109/ineuronstoresales/raw/7a4b0a32cd7ab31c9030f69dcd0c56567438c536/data/Test.csv
   data: data
+  ingested_dir: ingested_data
+  ingested_train_dir: train
+  ingested_test_dir: test
 
 data_validation_config:
   schema_dir: config
@@ -21,3 +24,10 @@ data_transformation_config:
   transformed_test_dir: test
   preprocessing_dir: preprocessed
   preprocessed_object_file_name: preprocessed.pkl
+
+model_trainer_config:
+  trained_model_dir: trained_model
+  model_file_name: model.pkl
+  base_accuracy: 0.5
+  model_config_dir: config
+  model_config_file_name: model.yaml

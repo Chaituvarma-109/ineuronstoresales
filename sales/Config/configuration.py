@@ -2,7 +2,7 @@ import os
 import sys
 
 from sales.Entity.config_entity import (DataIngestionConfig, TrainingPipelineConfig, DatavalidationConfig,
-                                        DataTransformationConfig)
+                                        DataTransformationConfig, ModelTrainerConfig)
 from sales.Exception.customexception import SalesException
 from sales.Logger.log import logging
 from sales.Constants import *
@@ -17,6 +17,8 @@ class Configuration:
 
     def get_data_ingestion_config(self) -> DataIngestionConfig:
         try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+            data_digestion_artifact_dir = os.path.join(artifact_dir, DATA_INGESTION_ARTIFACT_DIR, self.timestamp)
             data_digestion_data_dir = os.path.join(ROOT_DIR, DATA_INGESTION_DATA_DIR_KEY)
 
             data_ingestion_info = self.config_info[DATA_INGESTION_CONFIG_KEY]
@@ -24,10 +26,21 @@ class Configuration:
             train_dataset_download_url = data_ingestion_info[DATA_INGESTION_TRAIN_DATA_DOWNLOAD_URL]
             test_dataset_download_url = data_ingestion_info[DATA_INGESTION_TEST_DATA_DOWNLOAD_URL]
 
+            ingested_data_dir = os.path.join(data_digestion_artifact_dir,
+                                             data_ingestion_info[DATA_INGESTION_INGESTED_DIR_NAME_KEY])
+
+            ingested_train_dir = os.path.join(ingested_data_dir,
+                                              data_ingestion_info[DATA_INGESTION_TRAIN_DIR_KEY])
+
+            ingested_test_dir = os.path.join(ingested_data_dir,
+                                             data_ingestion_info[DATA_INGESTION_TEST_DIR_KEY])
+
             data_ingestion_config = DataIngestionConfig(
                 DATA_INGESTION_TRAIN_DATA_DOWNLOAD_URL=train_dataset_download_url,
                 DATA_INGESTION_TEST_DATA_DOWNLOAD_URL=test_dataset_download_url,
-                DATA_INGESTION_DATA_DIR=data_digestion_data_dir
+                DATA_INGESTION_DATA_DIR=data_digestion_data_dir,
+                ingested_train_dir=ingested_train_dir,
+                ingested_test_dir=ingested_test_dir
             )
 
             logging.info(f"Data Ingestion Config: {data_ingestion_config}")
@@ -89,6 +102,37 @@ class Configuration:
 
             logging.info(f"Data transformation config: {data_transformation_config}")
             return data_transformation_config
+        except Exception as e:
+            raise SalesException(e, sys) from e
+
+    def get_model_trainer_config(self) -> ModelTrainerConfig:
+        try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+
+            model_trainer_artifact_dir = os.path.join(
+                artifact_dir,
+                MODEL_TRAINER_ARTIFACT_DIR,
+                self.timestamp
+            )
+            model_trainer_config_info = self.config_info[MODEL_TRAINER_CONFIG_KEY]
+            trained_model_file_path = os.path.join(model_trainer_artifact_dir,
+                                                   model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_DIR_KEY],
+                                                   model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY]
+                                                   )
+
+            model_config_file_path = os.path.join(model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_DIR_KEY],
+                                                  model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_FILE_NAME_KEY]
+                                                  )
+
+            base_accuracy = model_trainer_config_info[MODEL_TRAINER_BASE_ACCURACY_KEY]
+
+            model_trainer_config = ModelTrainerConfig(
+                trained_model_file_path=trained_model_file_path,
+                base_accuracy=base_accuracy,
+                model_config_file_path=model_config_file_path
+            )
+            logging.info(f"Model trainer config: {model_trainer_config}")
+            return model_trainer_config
         except Exception as e:
             raise SalesException(e, sys) from e
 

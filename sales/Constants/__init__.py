@@ -22,9 +22,13 @@ TRAINING_PIPELINE_NAME_KEY = 'pipeline_name'
 
 # Data Ingestion related variables
 DATA_INGESTION_CONFIG_KEY = 'data_ingestion_config'
+DATA_INGESTION_ARTIFACT_DIR = "data_ingestion"
 DATA_INGESTION_DATA_DIR_KEY = 'data'
 DATA_INGESTION_TRAIN_DATA_DOWNLOAD_URL = 'train_dataset_url'
 DATA_INGESTION_TEST_DATA_DOWNLOAD_URL = 'test_dataset_url'
+DATA_INGESTION_INGESTED_DIR_NAME_KEY = "ingested_dir"
+DATA_INGESTION_TRAIN_DIR_KEY = "ingested_train_dir"
+DATA_INGESTION_TEST_DIR_KEY = "ingested_test_dir"
 
 # Data Validation related variables
 DATA_VALIDATION_CONFIG_KEY = "data_validation_config"
@@ -54,3 +58,12 @@ NUMERICAL_COLUMN_KEY = "numerical_columns"
 CATEGORICAL_COLUMN_KEY = "categorical_columns"
 
 TARGET_COLUMN_KEY = "target_column"
+
+# Model Training related variables
+MODEL_TRAINER_ARTIFACT_DIR = "model_trainer"
+MODEL_TRAINER_CONFIG_KEY = "model_trainer_config"
+MODEL_TRAINER_TRAINED_MODEL_DIR_KEY = "trained_model_dir"
+MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY = "model_file_name"
+MODEL_TRAINER_BASE_ACCURACY_KEY = "base_accuracy"
+MODEL_TRAINER_MODEL_CONFIG_DIR_KEY = "model_config_dir"
+MODEL_TRAINER_MODEL_CONFIG_FILE_NAME_KEY = "model_config_file_name"
