@@ -5,6 +5,7 @@ from flask import Flask, request
 from flask import render_template
 
 from sales.Entity.sales_predictor import SalesPredictor, SalesData
+from sales.Logger.log import logging
 from sales.Constants import CONFIG_DIR
 
 ROOT_DIR = os.getcwd()
@@ -25,8 +26,10 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     try:
+        logging.info("rendering index.html template.")
         return render_template('index.html')
     except Exception as e:
+        logging.exception(f"error: {e}")
         return str(e)
 
 
@@ -63,8 +66,10 @@ def predict():
                                Outlet_Type=Outlet_Type,
                                )
         sales_df = sales_data.get_sales_input_data_frame()
+        logging.info(f"{'>'*30}prediction started{'<'*30}")
         sales_predictor = SalesPredictor(model_dir=MODEL_DIR)
         item_outlet_sales_value = sales_predictor.predict(X=sales_df)
+        logging.info(f"{'>' * 30}prediction over{'<' * 30}")
         context = {
             SALES_DATA_KEY: sales_data.get_sales_data_as_dict(),
             ITEM_OUTLET_SALES_KEY: item_outlet_sales_value,
@@ -74,4 +79,4 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
