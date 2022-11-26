@@ -16,3 +16,11 @@ model_selection:
     search_param_random:
       min_samples_leaf:
         - 6
+  module_1:
+    class: Ridge
+    module: sklearn.linear_model
+    param:
+      fit_intercept: true
+    search_param_random:
+      solver:
+        - saga
