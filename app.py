@@ -1,4 +1,3 @@
-import json
 import os
 
 from flask import Flask, request
@@ -6,15 +5,9 @@ from flask import render_template
 
 from sales.Entity.sales_predictor import SalesPredictor, SalesData
 from sales.Logger.log import logging
-from sales.Constants import CONFIG_DIR
 
 ROOT_DIR = os.getcwd()
-LOG_FOLDER_NAME = "logs"
-PIPELINE_FOLDER_NAME = "sales"
 SAVED_MODELS_DIR_NAME = "saved_models"
-MODEL_CONFIG_FILE_PATH = os.path.join(ROOT_DIR, CONFIG_DIR, "model.yaml")
-LOG_DIR = os.path.join(ROOT_DIR, LOG_FOLDER_NAME)
-PIPELINE_DIR = os.path.join(ROOT_DIR, PIPELINE_FOLDER_NAME)
 MODEL_DIR = os.path.join(ROOT_DIR, SAVED_MODELS_DIR_NAME)
 
 SALES_DATA_KEY = "sales_data"
